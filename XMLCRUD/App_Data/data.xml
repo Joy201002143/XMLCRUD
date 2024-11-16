@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Employees>
+  <Employee>
+    <ID>1</ID>
+    <Name>John Doe</Name>
+    <Department>HR</Department>
+  </Employee>
+  <Employee>
+    <ID>2</ID>
+    <Name>Jane Smith</Name>
+    <Department>IT</Department>
+  </Employee>
+  <Employee>
+    <ID>3</ID>
+    <Name>Bob</Name>
+    <Department>ERP</Department>
+  </Employee>
+  <Employee>
+    <ID>4</ID>
+    <Name>Alies</Name>
+    <Department>MIS</Department>
+  </Employee>
+  
+  <Employee>
+    <ID>5</ID>
+    <Name>Joe</Name>
+    <Department>Cutting</Department>
+  </Employee>
+  <Employee>
+    <ID>6</ID>
+    <Name>Bidden</Name>
+    <Department>Febric</Department>
+  </Employee>
+</Employees>
