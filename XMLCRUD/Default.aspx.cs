@@ -3,6 +3,7 @@ using System.Web.UI;
 using System.Data;
 using System.Xml;
 using System.Web.UI.WebControls;
+using System.Linq;
 
 namespace XMLCRUD
 {
@@ -30,12 +31,18 @@ namespace XMLCRUD
 
             if (ds.Tables["Employee"] != null)
             {
-                DropDownList1.DataSource = ds.Tables["Employee"];
-                DropDownList1.DataTextField = "Name";  
-                DropDownList1.DataValueField = "ID";  
+                var distinctDepartments = ds.Tables["Employee"].AsEnumerable()
+                                .Select(row => row.Field<string>("Department"))
+                                .Distinct()
+                                .ToList();
+                DropDownList1.DataSource = distinctDepartments;
                 DropDownList1.DataBind();
+                //DropDownList1.DataSource = ds.Tables["Employee"];
+                //DropDownList1.DataTextField = "Department";  
+                //DropDownList1.DataValueField = "Department";  
+                //DropDownList1.DataBind();
 
-                DropDownList1.Items.Insert(0, new ListItem("-- Select Employee --", "0"));
+                DropDownList1.Items.Insert(0, new ListItem("-- Select Department --", "0"));
             }
         }
 
@@ -146,12 +153,14 @@ namespace XMLCRUD
                 if (DropDownList1.SelectedValue == "0" ) {
                     LoadEmployees();
                 }
+
                 else
                 {
                     DataView dv = new DataView(employeeTable);
                     dv.RowFilter = $"Department LIKE '%{DropDownList1.SelectedValue}%' OR ID LIKE '%{DropDownList1.SelectedValue}%' OR Name LIKE '%{DropDownList1.SelectedValue}%'";
                     gvEmployees.DataSource = dv;
                     gvEmployees.DataBind();
+                    
                 }
                 ClearFields();
             }
