@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Web.UI;
 using System.Data;
-using System.Xml;
+using System.Xml;   
 using System.Web.UI.WebControls;
-using System.Linq;
 using System.Data.SqlClient;
 using System.Collections.Generic;
-using System.Configuration;
 
 namespace XMLCRUD
 {
@@ -22,7 +20,8 @@ namespace XMLCRUD
             {
                 LoadEmployees();
                 BindDropdown();
-
+                ReloadDrop();
+                Session["LastSelection"] = DropDownList1.SelectedValue; 
             }
 
         }
@@ -37,35 +36,30 @@ namespace XMLCRUD
                 {
                     conn.Open();
 
-                    string query = "GetDistinctDesignation";  // Query to fetch distinct Designations
+                    string query = "GetDistinctDesignation";  
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         SqlDataReader reader = cmd.ExecuteReader();
 
-                        // Check if data exists
                         if (reader.HasRows)
                         {
                             List<string> designations = new List<string>();
 
                             while (reader.Read())
                             {
-                                // Add the Designation values to the list
                                 designations.Add(reader["Designation"].ToString());
                             }
 
-                            // Bind the distinct Designations to the DropDownList
                             DropDownList1.DataSource = designations;
                             DropDownList1.DataBind();
                         }
 
-                        // Insert a default "Select" option at the top
                         DropDownList1.Items.Insert(0, new ListItem("-- View ALl --", "0"));
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Handle any potential errors (e.g., connection issues, query errors)
                     Console.WriteLine("Error: " + ex.Message);
                 }
             }
@@ -85,7 +79,6 @@ namespace XMLCRUD
                     using (SqlCommand cmd = new SqlCommand(procedureName, conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure; //EXEC the store procedure
-                        
                         SqlDataReader reader = cmd.ExecuteReader();
                         DataTable dataTable = new DataTable();
                         dataTable.Columns.Add("Id");         //Fetch the data tables Columns naems
@@ -150,6 +143,8 @@ namespace XMLCRUD
                 }
 
                 //LoadEmployees();
+                Session["LastSelection"] = DropDownList1.SelectedValue;
+                BindDropdown();
                 ReloadDrop();
                 ClearFields();
             }
@@ -179,13 +174,10 @@ namespace XMLCRUD
 
         protected void gvEmployees_RowEditing(object sender, GridViewEditEventArgs e)
         {
-            // Set the edit index to the row clicked for editing
             gvEmployees.EditIndex = e.NewEditIndex;
-            // Rebind the grid to display the editable field
             ReloadDrop();
         }
 
-        // Event for Row Updating
         protected void gvEmployees_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
             GridViewRow row = gvEmployees.Rows[e.RowIndex];
@@ -208,25 +200,20 @@ namespace XMLCRUD
 
         private void UpdateEmployee(int employeeID, string name, string designation, decimal salary)
         {
-            // Example connection string, replace with your actual connection string
             string connString = "Server=DESKTOP-JHB8AON;Database=Employee;Trusted_Connection=True;";
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // Define the command and set the stored procedure name
                 SqlCommand cmd = new SqlCommand("UpdateEmployee", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                // Add parameters for the stored procedure
                 cmd.Parameters.AddWithValue("@EmployeeID", employeeID);
                 cmd.Parameters.AddWithValue("@Name", name);
                 cmd.Parameters.AddWithValue("@Designation", designation);
                 cmd.Parameters.AddWithValue("@Salary", salary);
 
-                // Open the connection
                 conn.Open();
 
-                // Execute the command
                 cmd.ExecuteNonQuery();
             }
         }
@@ -306,7 +293,11 @@ namespace XMLCRUD
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         // Get the selected value from the DropDownList
-                        string selectedValue = DropDownList1.SelectedValue;
+                        string selectedValue="0";
+                        if (!string.IsNullOrEmpty(Session["LastSelection"] as string) )
+                            {
+                            selectedValue = Session["LastSelection"] as string;
+                        }
 
                         // If "0" is selected, load all employees (or fetch all records)
                         if (selectedValue == "0")
@@ -364,9 +355,17 @@ namespace XMLCRUD
                     using (SqlCommand cmd = new SqlCommand(procedureName, conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-
+                        string selectedValue;
                         // Get the selected value from the DropDownList
-                        string selectedValue = DropDownList1.SelectedValue;
+                        if (!string.IsNullOrEmpty(Session["LastSelection"] as string))
+                        {
+                            selectedValue = Session["LastSelection"] as string;
+                        }
+                        
+                            selectedValue= DropDownList1.SelectedValue;
+                        Session["LastSelection"] = selectedValue;
+
+                        //  DropDownList1.SelectedValue;
 
                         // If "0" is selected, load all employees (or fetch all records)
                         if (selectedValue == "0")

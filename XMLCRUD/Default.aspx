@@ -57,8 +57,8 @@
         <br />
         <asp:Label ID="Label1" runat="server" Text="You can also select by DropDown"></asp:Label>
         <br />
-        <br />
-        <asp:DropDownList ID="DropDownList1" AutoPostBack="true" runat="server" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged" CssClass="searchable-dropdown" Width="188px">
+        <br />                                                                                                                      
+        <asp:DropDownList ID="DropDownList1" AutoPostBack="true" runat="server" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged" CssClass="searchable-dropdown" Width="188px" >
         </asp:DropDownList>
         <br />
         <br />
