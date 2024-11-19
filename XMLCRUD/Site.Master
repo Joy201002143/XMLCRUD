@@ -7,6 +7,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%: Page.Title %> - My ASP.NET Application</title>
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" /> <!--DropDown Search Start-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>             <!--DropDown Search End-->
+  <script type="text/javascript">
+
+      $(document).ready(function () {                     //DropDown Search using select2 start
+          $(".searchable-dropdown").select2({
+              placeholder: "Select a Designation",
+              allowClear: true
+          });
+      });//DropDown Search using select2 End
+  </script>
+
 
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
