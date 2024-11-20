@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace XMLCRUD
 {
-    
+
 
     public partial class _Default : Page
     {
@@ -172,51 +172,51 @@ namespace XMLCRUD
         }
 
 
-        protected void gvEmployees_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-            gvEmployees.EditIndex = e.NewEditIndex;
-            ReloadDrop();
-        }
+        //protected void gvEmployees_RowEditing(object sender, GridViewEditEventArgs e)
+        //{
+        //    gvEmployees.EditIndex = e.NewEditIndex;
+        //    ReloadDrop();
+        //}
 
-        protected void gvEmployees_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-            GridViewRow row = gvEmployees.Rows[e.RowIndex];
+        //protected void gvEmployees_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        //{
+        //    GridViewRow row = gvEmployees.Rows[e.RowIndex];
 
-            TextBox txtEmployeeID = (TextBox)row.FindControl("txtEmployeeID");
-            TextBox txtName = (TextBox)row.FindControl("txtName");
-            TextBox txtDesignation = (TextBox)row.FindControl("txtDesignation");
-            TextBox txtSalary = (TextBox)row.FindControl("txtSalary");
+        //    TextBox txtEmployeeID = (TextBox)row.FindControl("txtEmployeeID");
+        //    TextBox txtName = (TextBox)row.FindControl("txtName");
+        //    TextBox txtDesignation = (TextBox)row.FindControl("txtDesignation");
+        //    TextBox txtSalary = (TextBox)row.FindControl("txtSalary");
 
-            int employeeID = Convert.ToInt32(gvEmployees.DataKeys[e.RowIndex].Value);
+        //    int employeeID = Convert.ToInt32(gvEmployees.DataKeys[e.RowIndex].Value);
 
-            UpdateEmployee(employeeID, txtName.Text, txtDesignation.Text, Convert.ToDecimal(txtSalary.Text));
+        //    UpdateEmployee(employeeID, txtName.Text, txtDesignation.Text, Convert.ToDecimal(txtSalary.Text));
 
-            gvEmployees.EditIndex = -1;
-            ReloadDrop();
-        }
-
-
+        //    gvEmployees.EditIndex = -1;
+        //    ReloadDrop();
+        //}
 
 
-        private void UpdateEmployee(int employeeID, string name, string designation, decimal salary)
-        {
-            string connString = "Server=DESKTOP-JHB8AON;Database=Employee;Trusted_Connection=True;";
 
-            using (SqlConnection conn = new SqlConnection(connString))
-            {
-                SqlCommand cmd = new SqlCommand("UpdateEmployee", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@EmployeeID", employeeID);
-                cmd.Parameters.AddWithValue("@Name", name);
-                cmd.Parameters.AddWithValue("@Designation", designation);
-                cmd.Parameters.AddWithValue("@Salary", salary);
+        //private void UpdateEmployee(int employeeID, string name, string designation, decimal salary)
+        //{
+        //    string connString = "Server=DESKTOP-JHB8AON;Database=Employee;Trusted_Connection=True;";
 
-                conn.Open();
+        //    using (SqlConnection conn = new SqlConnection(connString))
+        //    {
+        //        SqlCommand cmd = new SqlCommand("UpdateEmployee", conn);
+        //        cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.ExecuteNonQuery();
-            }
-        }
+        //        cmd.Parameters.AddWithValue("@EmployeeID", employeeID);
+        //        cmd.Parameters.AddWithValue("@Name", name);
+        //        cmd.Parameters.AddWithValue("@Designation", designation);
+        //        cmd.Parameters.AddWithValue("@Salary", salary);
+
+        //        conn.Open();
+
+        //        cmd.ExecuteNonQuery();
+        //    }
+        //}
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
@@ -305,7 +305,7 @@ namespace XMLCRUD
                             LoadEmployees(); // This can be your existing function to load all employees without any filter
                         }
                         else
-                        {
+                        {   
                             cmd.Parameters.AddWithValue("@Designation", selectedValue);
 
                             SqlDataReader reader = cmd.ExecuteReader();
@@ -342,7 +342,7 @@ namespace XMLCRUD
             }
 
         
-        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+        protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)   
         {
             string connectionString = "Server=DESKTOP-JHB8AON;Database=Employee;Trusted_Connection=True;";
             string procedureName = "SearchEmployeeByDesignations"; // The procedure we created
@@ -406,9 +406,78 @@ namespace XMLCRUD
             }
         }
 
-        protected void gvEmployees_SelectedIndexChanged(object sender, EventArgs e)
+        protected void gvEmployees_RowEditing(object sender, GridViewEditEventArgs e)
         {
-
+            gvEmployees.EditIndex = e.NewEditIndex; // Set the row to Edit mode
+            ReloadDrop(); // Reload data to reflect editable rows
         }
+        protected void gvEmployees_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)   
+        {
+            gvEmployees.EditIndex = -1; // Reset EditIndex to disable Edit mode
+            ReloadDrop(); // Reload data to refresh the GridView
+        }
+        protected void gvEmployees_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        {
+            // Get the row being edited
+            GridViewRow row = gvEmployees.Rows[e.RowIndex];
+
+            // Retrieve values from the controls
+            int employeeID = Convert.ToInt32(gvEmployees.DataKeys[e.RowIndex].Value); // DataKey is "Id"
+            string name = ((TextBox)row.Cells[1].Controls[0]).Text; // Edit control for Name
+            string designation = ((TextBox)row.Cells[2].Controls[0]).Text; // Edit control for Designation
+            decimal salary = decimal.Parse(((TextBox)row.Cells[3].Controls[0]).Text); // Edit control for Salary
+
+            // Update the database record
+            UpdateEmployee(employeeID, name, designation, salary);
+
+            gvEmployees.EditIndex = -1; // Exit edit mode
+            ReloadDrop(); // Refresh data
+        }
+        protected void gvEmployees_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            // Get the ID of the row being deleted
+            int employeeID = Convert.ToInt32(gvEmployees.DataKeys[e.RowIndex].Value);
+
+            // Call the delete method
+            DeleteEmployee(employeeID);
+
+            ReloadDrop(); // Refresh data
+        }
+
+        private void UpdateEmployee(int employeeID, string name, string designation, decimal salary)
+        {
+            string connString = "Server=DESKTOP-JHB8AON;Database=Employee;Trusted_Connection=True;";
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                SqlCommand cmd = new SqlCommand("UppdateEmployee", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@EmployeeID", employeeID);
+                cmd.Parameters.AddWithValue("@Name", name);
+                cmd.Parameters.AddWithValue("@Designation", designation);
+                cmd.Parameters.AddWithValue("@Salary", salary);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+        private void DeleteEmployee(int employeeID)
+        {
+            string connString = "Server=DESKTOP-JHB8AON;Database=Employee;Trusted_Connection=True;";
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                SqlCommand cmd = new SqlCommand("sp_DelEmployee_s", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@ID", employeeID);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
     }
+
 }

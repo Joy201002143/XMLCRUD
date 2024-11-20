@@ -67,21 +67,21 @@
     <asp:Button ID="btnDelete" runat="server" OnClick="btnDelete_Click" Text="Delete" />
         <br />
         <br />
-    <asp:GridView ID="gvEmployees" runat="server" CellPadding="4" ForeColor="#333333" GridLines="None">
-            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
-            <EditRowStyle BackColor="#999999" />
-            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />  
-            <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
-            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
-            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
-            <SortedAscendingCellStyle BackColor="#E9E7E2" />
-            <SortedAscendingHeaderStyle BackColor="#506C8C" />
-            <SortedDescendingCellStyle BackColor="#FFFDF8" />
-            <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
-            <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <PagerStyle BackColor="#284775" ForeColor="#FFFFFF" HorizontalAlign="Center" />
-            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
-          </asp:GridView>
+   <asp:GridView ID="gvEmployees" runat="server" AutoGenerateColumns="False" 
+    DataKeyNames="Id" 
+    OnRowEditing="gvEmployees_RowEditing" 
+    OnRowDeleting="gvEmployees_RowDeleting" 
+    OnRowUpdating="gvEmployees_RowUpdating" 
+    OnRowCancelingEdit="gvEmployees_RowCancelingEdit">
+    <Columns>
+        <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="True" />
+        <asp:BoundField DataField="Name" HeaderText="Name" />
+        <asp:BoundField DataField="Designation" HeaderText="Designation" />
+        <asp:BoundField DataField="Salary" HeaderText="Salary" />
+
+        <asp:CommandField ShowEditButton="True" ShowDeleteButton="True" />
+    </Columns>
+</asp:GridView>
+
     </center>
 </asp:Content>
