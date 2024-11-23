@@ -8,8 +8,7 @@ using System.Collections.Generic;
 
 namespace XMLCRUD
 {
-
-
+    
     public partial class _Default : Page
     {
         private string xmlFilePath;
@@ -47,7 +46,8 @@ namespace XMLCRUD
                             List<string> designations = new List<string>();
 
                             while (reader.Read())
-                            {
+                            {       
+
                                 designations.Add(reader["Designation"].ToString());
                             }
 
@@ -66,7 +66,7 @@ namespace XMLCRUD
         }
 
 
-        private void LoadEmployees()
+        private void LoadEmployees()    
         {
             string connectionString = "Server=DESKTOP-JHB8AON;Database=Employee;Trusted_Connection=True;";
             string procedureName = "FEmployeeXML"; //Apply the procedure
@@ -77,7 +77,7 @@ namespace XMLCRUD
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(procedureName, conn))
-                    {
+                    {       
                         cmd.CommandType = CommandType.StoredProcedure; //EXEC the store procedure
                         SqlDataReader reader = cmd.ExecuteReader();
                         DataTable dataTable = new DataTable();
@@ -332,14 +332,15 @@ namespace XMLCRUD
                     }
                 }
             }
-
+                    
 
 
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
-            }
+            
+        }
 
         
         protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)   
@@ -450,10 +451,10 @@ namespace XMLCRUD
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                SqlCommand cmd = new SqlCommand("UppdateEmployee", conn);
+                SqlCommand cmd = new SqlCommand("sp_UpdateEmployeeDetails", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("@EmployeeID", employeeID);
+                cmd.Parameters.AddWithValue("@Id", employeeID);
                 cmd.Parameters.AddWithValue("@Name", name);
                 cmd.Parameters.AddWithValue("@Designation", designation);
                 cmd.Parameters.AddWithValue("@Salary", salary);
